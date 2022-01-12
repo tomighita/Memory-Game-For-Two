@@ -7,6 +7,11 @@
 var app = require('../app');
 var debug = require('debug')('myproject:server');
 var http = require('http');
+const websocket = require("ws");
+const { stringify } = require('querystring');
+const Game = require("../game");
+
+const websockets = require("../socket");
 
 /**
  * Get port from environment and store in Express.
@@ -20,6 +25,122 @@ app.set('port', port);
  */
 
 var server = http.createServer(app);
+const wss = new websocket.Server({ server });
+
+// const websockets = {}; //property: websocket, value: game
+
+let connectionID = 0; //each websocket receives a unique ID
+let gameID = 0;
+global.currentGame = new Game(++gameID);
+let isFirst = false;
+
+wss.on("connection", function connection(ws) {
+  connectionID++;
+  websockets[ws] = currentGame;
+  if (!currentGame.playerA) {
+    currentGame.playerA = ws;
+    ws.send(msgString("set_title", "Waiting for players..."));
+  } else {
+    currentGame.playerB = ws;
+    currentGame.playerA.send(msgString("your_turn", null));
+    currentGame.playerA.send(msgString("start_time", null));
+    currentGame.playerB.send(msgString("start_time", null));
+
+    currentGame.playerA.send(msgString("set_title", "Your turn!"));
+    ws.send(msgString("set_title", "Opponent's turn!"));
+
+    currentGame = new Game(++gameID);
+  }
+  // console.log(ws);
+  const conn = ws;
+  console.log("WSS Working");
+  //console.log(currentGame);
+  // ws.send(JSON.stringify({
+  //   message_type : "your_turn",
+  //   message_value : null
+  // }));
+
+  let id1;
+  let id2;
+
+  conn.on("message", function (msg){
+      const message = JSON.parse(msg.toString());
+      websockets[conn].playerB.send(msgString("opponent's_choice",message.card));
+      if (message.clicks == 1){
+        id1 = message.card;
+      } else {
+        id2 = message.card;
+        setTimeout( () => {
+          if (websockets[conn].checkIfEq(id1, id2)) {
+            websockets[conn].playerAScore++;
+            websockets[conn].playerA.send(msgString("correct_guess", {id1, id2}));
+            websockets[conn].playerB.send(msgString("correct_guess", {id1, id2}));
+            websockets[conn].playerA.send(msgString("update_your_score",null));
+            websockets[conn].playerB.send(msgString("update_opponent's_score",null));
+            if (websockets[conn].playerAScore + websockets[conn].playerBScore == 12) {
+              let playerAStatus, playerBStatus;
+              if (websockets[conn].playerAScore > websockets[conn].playerBScore) {
+                playerAStatus = "You Won!";
+                playerBStatus = "You Lost! Better luck next time!";
+              } else if (websockets[conn].playerAScore < websockets[conn].playerBScore) {
+                playerBStatus = "You Won!";
+                playerAStatus = "You Lost! Better luck next time!";
+              } else {
+                playerAStatus = "It's a tie!";
+                playerBStatus = "It's a tie!";
+              }
+              websockets[conn].playerA.send(msgString("game_end", playerAStatus));
+              websockets[conn].playerB.send(msgString("game_end", playerBStatus));
+            }
+          } else {
+            websockets[conn].playerA.send(msgString("incorrect_guess", {id1, id2}));
+            websockets[conn].playerB.send(msgString("incorrect_guess", {id1, id2}));
+            
+            websockets[conn].playerA.send(msgString("set_title", "Opponent's turn!"));
+            websockets[conn].playerB.send(msgString("set_title", "Your turn!"));
+            
+            let aux = websockets[conn].playerA;
+            websockets[conn].playerA = websockets[conn].playerB;
+            websockets[conn].playerB = aux;
+
+            let auxScore = websockets[conn].playerAScore;
+            websockets[conn].playerAScore = websockets[conn].playerBScore;
+            websockets[conn].playerBScore = auxScore;
+          }
+          websockets[conn].playerA.send(msgString("your_turn", null));
+        }, 1000);
+        //console.log(websockets[conn].checkIfEq(id1, id2));
+        
+      }
+  });
+
+  conn.on("close", function(code) {
+    /*
+     * code 1001 means almost always closing initiated by the client;
+     * source: https://developer.mozilla.org/en-US/docs/Web/API/CloseEvent
+     */
+    if (code == 1001) {
+      /*
+       * if possible, abort the game; if not, the game is already completed
+       */
+      const gameObj = websockets[conn];
+
+      try {
+        gameObj.playerA.close();
+        gameObj.playerA = null;
+      } catch (e) {
+        console.log("Player A closing: " + e);
+      }
+
+      try {
+        gameObj.playerB.close();
+        gameObj.playerB = null;
+      } catch (e) {
+        console.log("Player B closing: " + e);
+      }
+    }
+  });
+});
 
 /**
  * Listen on provided port, on all network interfaces.
@@ -87,4 +208,8 @@ function onListening() {
     ? 'pipe ' + addr
     : 'port ' + addr.port;
   debug('Listening on ' + bind);
+}
+
+function msgString(type,val){
+  return JSON.stringify({message_type:type,message_value:val});
 }

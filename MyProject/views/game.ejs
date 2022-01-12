@@ -8,10 +8,10 @@
     <title>Game Screen</title>
 </head>
 <body>
-    <h2>Current Status ( Your turn / opponent's turn)</h2>
+    <h2 id="title"></h2>
     <div class="main-content">
         <div class="cards">
-            <% for(var i = 0; i < cards.length; i++){ console.log(cards) %>                
+            <% for(var i = 0; i < cards.length; i++){ %>                
                 <div class="card-container">
                     <div id="<%= i %>" class="card">
                         <div class="cover">
@@ -26,16 +26,18 @@
     <div class="stats">
         <div class="stats-card">
             <p class="stats-title">Your score</p>
-            <p class="stats-value">3</p>
+            <p class="stats-value" id = "your_score">0</p>
         </div>
         <div class="stats-card">
             <p class="stats-title">Time elapsed</p>
-            <p class="stats-value">45 seconds</p>
+            <p id="timer" class="stats-value">0</p>
         </div>
         <div class="stats-card">
             <p class="stats-title">Opponent's score</p>
-            <p class="stats-value">2</p>
+            <p class="stats-value" id = "opponent's_score">0</p>
         </div>
     </div>
+
+    <script src="scripts/game.js"></script>
 </body>
 </html>
