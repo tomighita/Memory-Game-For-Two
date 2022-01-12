@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 
 const game = require("../game");
-const wbs = require("../socket");
+const stats = require("../stats");
 
 /* GET home page. */
 // router.get('/', function(req, res, next) {
@@ -17,8 +17,8 @@ const wbs = require("../socket");
 
 
 router.get('/', (req,res,next) => {
-  res.sendFile("splash.html", {root: "./public"}, (err) => {
-    console.error(err);
+  res.render("splash.ejs", {
+    stats: stats
   });
 });
 

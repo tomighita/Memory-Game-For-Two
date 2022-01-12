@@ -21,7 +21,6 @@ function onStart(){
         switch (msg.message_type){
             case "your_turn":
                 clicks = 2;
-                console.log("My Turn!");
                 break;
             case "opponent's_choice":
                 cardToHide = document.getElementById(msg.message_value);

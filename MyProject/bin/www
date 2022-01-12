@@ -10,8 +10,9 @@ var http = require('http');
 const websocket = require("ws");
 const { stringify } = require('querystring');
 const Game = require("../game");
+const stats = require("../stats");
 
-const websockets = require("../socket");
+const websockets = require("../stats");
 
 /**
  * Get port from environment and store in Express.
@@ -38,6 +39,7 @@ wss.on("connection", function connection(ws) {
   connectionID++;
   websockets[ws] = currentGame;
   if (!currentGame.playerA) {
+    stats.GAMES_STARTED++;
     currentGame.playerA = ws;
     ws.send(msgString("set_title", "Waiting for players..."));
   } else {
@@ -73,6 +75,8 @@ wss.on("connection", function connection(ws) {
         setTimeout( () => {
           if (websockets[conn].checkIfEq(id1, id2)) {
             websockets[conn].playerAScore++;
+            if (stats.HIGHSCORE < websockets[conn].playerAScore)
+              stats.HIGHSCORE = websockets[conn].playerAScore;
             websockets[conn].playerA.send(msgString("correct_guess", {id1, id2}));
             websockets[conn].playerB.send(msgString("correct_guess", {id1, id2}));
             websockets[conn].playerA.send(msgString("update_your_score",null));
@@ -120,6 +124,7 @@ wss.on("connection", function connection(ws) {
      * source: https://developer.mozilla.org/en-US/docs/Web/API/CloseEvent
      */
     if (code == 1001) {
+      stats.GAMES_ABORTED++;
       /*
        * if possible, abort the game; if not, the game is already completed
        */

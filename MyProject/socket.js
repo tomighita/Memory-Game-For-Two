@@ -1,5 +1,0 @@
-sockets = {
-    
-}
-
-module.exports = sockets;
