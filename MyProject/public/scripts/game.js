@@ -55,6 +55,10 @@ function onStart(){
                 start = Date.now();
                 break;
             case "set_title":
+                if (msg.message_value == "Your turn!")
+                    addHover();
+                else if (msg.message_value == "Opponent's turn!")
+                    removeHover();
                 title.innerHTML = msg.message_value;
                 break;
         }
@@ -120,3 +124,16 @@ setInterval(() => {
     document.getElementById("timer").innerHTML = curr.toString().toHHMMSS();
 }, 1000);
 
+function addHover(){
+    let cards = document.getElementsByClassName("card");
+    for (card of cards){
+        card.classList.add("hoverable");
+    }
+}
+
+function removeHover(){
+    let cards = document.getElementsByClassName("card");
+    for (card of cards){
+        card.classList.remove("hoverable");
+    }
+}

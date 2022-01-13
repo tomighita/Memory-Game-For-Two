@@ -1,0 +1,83 @@
+:root {
+    --tu-delft: #00a6d6;
+}
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+html{
+    height: 100%;
+}
+body{
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    
+}
+.top-content{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.left-content{
+    width: 50%;
+    padding: 40px;
+}
+.left-content img{
+    width: 300px;
+
+}
+.text-container{
+    margin-top: 5em;
+    color: white;
+}
+.text-container ul{
+    list-style: none;
+    font-size: 1.6em;
+    margin-top: 2em;
+}
+.text-container h2{
+    font-size: 3em;
+    font-weight: 900;
+}
+.right-content{
+    width: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+.right-content h1{
+    font-size: 4em;
+    text-decoration: underline;
+}
+.right-content .rules{
+    margin-top: 2em;
+    font-size: 1.6em;
+    width: 60%;
+}
+.bottom-content{
+    flex: 1;
+    width: 100%;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    flex-direction: column;
+}
+.line{
+    height: 3px;
+    width: 50%;
+    background: linear-gradient(to right, #16A085, #F4D03F);
+}
+.bottom-content a{
+    padding: 30px 60px;
+    background: var(--tu-delft);
+    text-decoration: none;
+    color: white;
+    border-radius: 20px;
+    font-size: 2em;
+}
