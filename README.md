@@ -1,0 +1,1 @@
+To run the project, cd into the folder 'MyProject' and run 'npm install' && 'npm run start 3000'
