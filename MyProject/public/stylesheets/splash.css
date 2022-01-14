@@ -140,3 +140,38 @@ body{
     50% {width: 80%;}
     100% {width: 60%;}
 }
+
+@media only screen and (max-width: 800px) {
+    .top-content{
+        flex-direction: column;
+        width: 100%;
+    }
+    .top-content h2{
+        margin-top: 40px;
+        font-size: 1.6em;
+    }
+    .top-content ul{
+        font-size: 1.2em;
+    }
+    .left-content{
+        width: 100%;
+        border-radius: 0px;
+    }
+    .right-content {
+        padding-top: 20px;
+    }
+    .right-content h1{
+        font-size: 2em;
+    }
+    .right-content .rules{
+        font-size: 1.2em;
+    }
+    .bottom-content{
+        min-height: 400px;
+    }
+    .bottom-content h4{
+        position:unset;
+        bottom: -85px;
+        color: #00a6d6;
+    }    
+}
