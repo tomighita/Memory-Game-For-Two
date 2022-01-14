@@ -8,8 +8,24 @@ const socket = new WebSocket(URL);
 let title = document.getElementById("title");
 let finished = false;
 
+
+
 function onStart(){
     console.log(socket);
+
+    if (document.documentElement.clientWidth <= 800) {
+        screenTest({"matches" : true});
+    }
+
+    var mediaQueryList = window.matchMedia('(max-width: 800px)');
+    function screenTest(e) {
+        if (e.matches) {
+          window.alert("Your resolution is not optimal! Redirecting...");
+          window.location.href = "/";
+        }
+      }
+      
+      mediaQueryList.addListener(screenTest);
 
     socket.onmessage = function (event){       
 
