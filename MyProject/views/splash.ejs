@@ -9,10 +9,11 @@
 </head>
 <body>
     <div class="top-content">
-    <div class="left-content" style="background-color: #00a6d6;">
+    <div class="left-content">
+        
         <img src="./images/logo.png" alt="TU Delft Logo">
         <div class="text-container">
-            <h2>Stats:</h2>
+            <h2>Statistics:</h2>
             <ul>
                 <li>Started games: <%= stats.GAMES_STARTED %></li>
                 <li>Highscore: <%= stats.HIGHSCORE %></li>
@@ -24,8 +25,10 @@
         <h1>Memory Game - Multiplayer</h1>
         <div class="rules">
             <h4>Memory Rules: <br>
-                Each player can turn two cards and if they match, they may turn again. Otherwise,
-                the next player gets to chose.
+                In turn, each player chooses two cards and turns them face up. 
+                If they match, then that player wins the pair and plays again. 
+                If they are not the same, they are turned face down again and play switches between the players. 
+                The winner is the person with the most pairs.
             </h4>
 
         </div>
